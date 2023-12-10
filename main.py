@@ -16,6 +16,7 @@ esteaño = datetime.now().year
 #la primer variable es el primer dia habil del mes, ese nombre es porque no lo pienso usar
 _,diasenmes = calendar.monthrange(esteaño, esteMes)
 valores=dict()
+
 def cargarpagina():
     driver = webdriver.Chrome(options=options)
     time.sleep(1)
@@ -43,9 +44,12 @@ def fetchValores(driver):
 
 def agregarATabla(compra,venta):
     fecha=datetime.today().strftime('%d-%m-%Y') 
-    if(open('dolar.csv','r')==False):
+    try:
+        open('dolar.csv','r')
+    except(IOError):
         tabla=open('dolar.csv','a')
         tabla.write('Fecha, Dolar Compra, Dolar Venta')
+        print('se creo la tabla de valores')
     else:
         tabla = open('dolar.csv',"a")
     tabla.write('\n')
