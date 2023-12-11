@@ -14,46 +14,80 @@ options.add_argument('--disable-extensions')
 driver = webdriver.Chrome(options=options)
 #variables
 inicio=datetime.now().second
-hoy = datetime.now().day
-esteMes = datetime.now().month
-esteaño = datetime.now().year
+dia = datetime.now().day
+mes = datetime.now().month
 #la primer variable es el primer dia habil del mes, ese nombre es porque no lo pienso usar
-_,diasenmes = calendar.monthrange(esteaño, esteMes)
-valores=dict()
-
+_,diasenmes = calendar.monthrange(datetime.now().year, mes)
+valores={
+    'compra' : 0,
+    'venta': 0
+}
+valorexistente=False
 compraXpath='/html/body/div[2]/div[5]/div/div/div/div/div[1]/div/div/div/table/tbody/tr[1]/td[3]/div/p'
 ventaXpath='/html/body/div[2]/div[5]/div/div/div/div/div[1]/div/div/div/table/tbody/tr[2]/td[3]/div/p' 
-def cargarpagina(driver):
-    driver.get("https://www.brou.com.uy/cotizaciones")        
-    valores['compra'],valores['comprafloat'] = fetchValor(driver,compraXpath)
-    valores['venta'],valores['ventafloat']=fetchValor(driver,ventaXpath)
 
+#Refresca los valores desde las paginas y los escribe en valores
+def cargarpagina(driver):
+    driver.get("https://www.brou.com.uy/cotizaciones")
+    #obtener ultimos valores
+    valores['compra'] = fetchValor(driver,compraXpath)
+    valores['venta']= fetchValor(driver,ventaXpath)
+
+#Consigue los valores mediante Xpath y los devuelve como string 
 def fetchValor(driver,xpath):
     valstr=WebDriverWait(driver,3).until(EC.presence_of_element_located((By.XPATH,xpath)))
     valstr=valstr.text[0:5]
     valstr=valstr.replace(',','.')
-    valfloat=float(valstr)    
-    return valstr,valfloat
-    
-def agregarATabla(compra,venta,año):
-   fecha=datetime.today().strftime('%d-%m-%Y')
-   nombrecsv='dolar'+str(esteaño)+'.csv' 
-   with open(nombrecsv,'a+') as tabla:
-       if tabla.tell() == 0:
-           tabla.write('Fecha, Dolar Compra, Dolar Venta\n')
-       tabla.write('\n')
-       tabla.write(fecha + " , ")
-       tabla.write(compra + " , ")
-       tabla.write(venta)
-       tabla.close()    
+    return valstr
 
-while hoy == diasenmes :
+def ultimalinea(nombrecsv):    
+    with open(nombrecsv) as f:
+        for line in f:
+            pass
+        last_line = line
+        return last_line
+
+def csvlen(nombrecsv,count):
+    count=0    
+    with open(nombrecsv) as f:
+        for line in f:
+            count += 1   
+            print(count)     
+        return count
+    
+def agregarATabla(compra,venta,dia,mes):  
+   lineas=0 
+   #Esta es una cantidad desagradable de variables pero por el momento son necesarias
+   fecha=datetime.today().strftime('%d-%m-%Y')
+   año = datetime.now().year
+   nombrecsv='dolar'+str(año)+'.csv' 
+   last_line = ultimalinea(nombrecsv)
+   lineas=csvlen(nombrecsv,lineas)
+   ucompra = str(last_line[11:16])
+   uventa = str(last_line[17:23])
+   ic(nombrecsv,lineas,last_line,ucompra,compra,uventa,venta)
+   with open(nombrecsv,'a+') as tabla: 
+        if tabla.tell() == 0:
+            tabla.write('Fecha, Dolar Compra, Dolar Venta\n')
+        if dia == 1:
+            tabla.write('\n'+str(mes))  
+        if lineas > 1 and ucompra == compra and uventa == venta:           
+            print('este valor ya existe')
+            return True
+        else:            
+            row=str('\n'+ fecha + "," + str(compra) + ","+ str(venta))
+            ic(row)
+            tabla.write(row)
+            tabla.close()     
+            return False
+#repetir cada dia
+while True:
     cargarpagina(driver)
-    agregarATabla(valores['compra'],valores['venta'])
-    hoy += 1
-    ic("esperando hasta mañana, hoy es: ", hoy) 
-    time.sleep(300) 
-else:
-    hoy = datetime.now().day
-    ic('Se actualizo la fecha a: ',hoy)
-driver.quit()
+    valorexistente=agregarATabla(valores['compra'],valores['venta'],dia,mes)
+    while valorexistente==True:
+        print("valor existe esperando 5 min")
+        time.sleep(300)
+        valorexistente=agregarATabla(valores['compra'],valores['venta'],dia,mes)
+        if valorexistente == False:
+            print("Valor de hoy actualizado esperando a mañana")
+            time.sleep(86400) 
