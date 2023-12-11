@@ -51,36 +51,37 @@ def csvlen(nombrecsv,count):
     count=0    
     with open(nombrecsv) as f:
         for line in f:
-            count += 1   
-            print(count)     
+            count += 1     
         return count
     
 def agregarATabla(compra,venta,dia,mes):  
-   lineas=0 
-   #Esta es una cantidad desagradable de variables pero por el momento son necesarias
-   fecha=datetime.today().strftime('%d-%m-%Y')
-   año = datetime.now().year
-   nombrecsv='dolar'+str(año)+'.csv' 
-   last_line = ultimalinea(nombrecsv)
-   lineas=csvlen(nombrecsv,lineas)
-   ucompra = str(last_line[11:16])
-   uventa = str(last_line[17:23])
-   ic(nombrecsv,lineas,last_line,ucompra,compra,uventa,venta)
-   with open(nombrecsv,'a+') as tabla: 
-        if tabla.tell() == 0:
-            tabla.write('Fecha, Dolar Compra, Dolar Venta\n')
-        if dia == 1:
-            tabla.write('\n'+str(mes))  
-        if lineas > 1 and ucompra == compra and uventa == venta:           
-            print('este valor ya existe')
-            return True
-        else:            
-            row=str('\n'+ fecha + "," + str(compra) + ","+ str(venta))
-            ic(row)
-            tabla.write(row)
-            tabla.close()     
-            return False
-#repetir cada dia
+    lineas=0 
+    #Esta es una cantidad desagradable de variables pero por el momento son necesarias
+    fecha=datetime.today().strftime('%d-%m-%Y')
+    año = datetime.now().year
+    nombrecsv='dolar'+str(año)+'.csv' 
+
+    with open(nombrecsv,'a+') as tabla: 
+            if tabla.tell() == 0:
+                tabla.write('Fecha, Dolar Compra, Dolar Venta\n')
+            if dia == 1:
+                tabla.write('\n'+str(mes))
+            last_line = ultimalinea(nombrecsv)
+            lineas=csvlen(nombrecsv,lineas)
+            if lineas > 1:
+                ucompra = str(last_line[11:16])
+                uventa = str(last_line[17:23])  
+                ic(nombrecsv,lineas,last_line,ucompra,compra,uventa,venta)
+                if ucompra == compra and uventa == venta:           
+                    print('este valor ya existe')
+                    return True
+            else:            
+                row=str('\n'+ fecha + "," + str(compra) + ","+ str(venta))
+                ic(row)
+                tabla.write(row)
+                tabla.close()     
+                return False
+    #repetir cada dia
 while True:
     cargarpagina(driver)
     valorexistente=agregarATabla(valores['compra'],valores['venta'],dia,mes)
@@ -88,6 +89,6 @@ while True:
         print("valor existe esperando 5 min")
         time.sleep(300)
         valorexistente=agregarATabla(valores['compra'],valores['venta'],dia,mes)
-        if valorexistente == False:
-            print("Valor de hoy actualizado esperando a mañana")
-            time.sleep(86400) 
+    if valorexistente == False:
+        print("Valor de hoy actualizado esperando a mañana")
+        time.sleep(86400) 
