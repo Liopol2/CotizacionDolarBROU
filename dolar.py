@@ -68,8 +68,7 @@ def agregarATabla(compra,venta,dia,mes):
                 ic(nombrecsv,lineas,last_line,ucompra,compra,uventa,venta)
                 if ucompra == compra and uventa == venta:           
                     print('este valor ya existe')
-                    return True
-            else:            
+                    return True                        
                 row=str('\n'+ fecha + "," + str(compra) + ","+ str(venta))
                 ic(row)
                 tabla.write(row)
