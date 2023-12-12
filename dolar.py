@@ -40,20 +40,15 @@ def fetchValor(driver,xpath):
     valstr=valstr.replace(',','.')
     return valstr
 
-def ultimalinea(nombrecsv):    
-    with open(nombrecsv) as f:
-        for line in f:
-            pass
-        last_line = line
-        return last_line
-
-def csvlen(nombrecsv,count):
+def ultimalinea(nombrecsv): 
     count=0    
     with open(nombrecsv) as f:
         for line in f:
-            count += 1     
-        return count
-    
+            count += 1
+        lastline = line
+        return lastline,count
+
+
 def agregarATabla(compra,venta,dia,mes):  
     lineas=0 
     #Esta es una cantidad desagradable de variables pero por el momento son necesarias
@@ -66,8 +61,7 @@ def agregarATabla(compra,venta,dia,mes):
                 tabla.write('Fecha, Dolar Compra, Dolar Venta\n')
             if dia == 1:
                 tabla.write('\n'+str(mes))
-            last_line = ultimalinea(nombrecsv)
-            lineas=csvlen(nombrecsv,lineas)
+            last_line,lineas = ultimalinea(nombrecsv)
             if lineas > 1:
                 ucompra = str(last_line[11:16])
                 uventa = str(last_line[17:23])  
