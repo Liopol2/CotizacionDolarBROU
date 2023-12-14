@@ -58,7 +58,7 @@ def agregarATabla(compra,venta,dia,mes):
 
     with open(nombrecsv,'a+') as tabla: 
             if tabla.tell() == 0:
-                tabla.write('Fecha, Dolar Compra, Dolar Venta\n')
+                tabla.write('Fecha,Dolar Compra,Dolar Venta\n')
             if dia == 1:
                 tabla.write('\n'+str(mes))
             last_line,lineas = ultimalinea(nombrecsv)

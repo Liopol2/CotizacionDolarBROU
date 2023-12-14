@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{%block head%}
+    <title>Dala Dala</title>
+{%endblock%}
+
+{%block body%}
+<div class="principal">
+    <h1>Bienvenido <br> 
+        Esta es una forma auxiliar para la API del valor del dolar.</h1>
+    <p>Instrucciones:
+        por defecto al acceder a <a href="dolarapi">dolarapi</a> el servidor devolverá el ultimo valor registrado para el dolar, tanto compra como venta.
+        Podemos cambiar el resultado mediante los siguientes parametros. <br><br>
+        &emsp; fecha: 
+            ej: 1 , 10-01 ,20-10-2030 <br>
+            con este parametro el servidor buscara el valor correspondiente a la fecha y devolverá un error en caso contrario
+            el valor por defecto es la fecha de hoy <br>
+        &emsp; valor:
+            ej: c, v, cv <br>
+            este parametro decide que valor nos devuelve, c = valor compra, v = valor venta, cv = compra y venta, este ultimo es el valor por defecto y devuelve un diccionario con las claves "compra" y "venta" y sus respectivos valores. 
+
+    </p>
+    <form action="/dolarapi" method="GET">
+        <label for="fecha">fecha</label>
+        <input type="datetime" name="fecha" id="fecha">
+        <br>
+        <br>
+        <br>
+        <label for="valor">valor</label>
+        <input type="text" name="valor" id="valor">
+        <br>
+        <br>
+        <br>
+        <input type="submit" value="Aceptar">
+    </form>
+</div>
+{%endblock%}
