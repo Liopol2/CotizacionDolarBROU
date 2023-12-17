@@ -6,19 +6,21 @@
 
 {%block body%}
 <div class="principal">
-    <h1>Bienvenido <br> 
-        Esta es una forma auxiliar para la API del valor del dolar.</h1>
-    <p>Instrucciones:
-        ingresar la fecha desde la que empezar el grafico en la casilla inicio, y la fecha de fin en la casilla Fin, 
-        por defecto devuelve el ultimo mes. <br>
-        formato esperado dd-mm-aaaa
+    <h1>Bienvenido</h1><br> 
+    <h2>Esta es una forma auxiliar para la API del valor del dolar.</h2>
+    <p><span>
+        Instrucciones:
+        Ingresar la fecha desde la que empezar el grafico en la casilla Inicio, y la fecha de fin en la casilla Fin, 
+        Por defecto devuelve el ultimo mes. <br>
+        Formato esperado dd-mm-aaaa
+    </span>
     </p>
     <form action="/grafica" method="POST">
-        <label for="Inicio">Inicio</label>
-        <input type="datetime" name="Inicio" id="Inicio">
+        <label for="titulo">Ingrese fechas de Inicio y Fin debajo</label>        <label for="Inicio">Inicio</label>
+        <input type="datetime-local" name="Inicio" id="Inicio">
         <label for="fecha">Fin</label>
-        <input type="datetime" name="Fin" id="Fin">
-        <input type="submit" value="Aceptar">
+        <input type="datetime-local" name="Fin" id="Fin">
+        <input id='submit' type="submit" value="Aceptar">
     </form>
 </div>
 {%endblock%}

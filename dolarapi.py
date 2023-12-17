@@ -79,6 +79,8 @@ def plotear():
         ic(Inicio,InicioS,Fin,FinS)
         #Cargo el xlsx a un dataframe
         df = pd.read_excel('dolar.xlsx')
+        ic(df)
+
         #Verificar que el inicio este en la lista
         primerafila=df.iloc[[0]].values[0].tolist()
         ultimafila = df.iloc[[-1]].values[0].tolist()
@@ -116,7 +118,7 @@ def plotear():
             df.insert(1, "Dolar Compra")
             df.insert(2, "Dolar Venta")
             df.to_excel(writer,sheet_name="Sheet1",index=False)
-        plt.savefig('dolar'+'.png')
+        plt.savefig('static/dolar.png')
         return render_template("grafica.html")
 
 if __name__ == "__main__":

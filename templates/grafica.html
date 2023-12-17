@@ -5,6 +5,8 @@
 {%endblock%}
 
 {%block body%}
+    #no olvidar que los archivos van en static y que url url_for usa el argumento filename para el archivos
     <img src={{url_for(dolar.png)}} alt="Grafica Precio dolar">
+    <img src="{{ url_for('static', filename='dolar.png') }}" alt="Dolar">
     <a href={{url_for(dolar.png)}}>Descargar</a>
 {%endblock%}

@@ -1,0 +1,39 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap');
+
+body{
+    display: grid;
+    background-color: black;
+    color: white;
+    text-align: center;
+    place-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.principal{
+    display: grid;
+    place-items: center;
+    place-content: center;
+}
+form{
+    display: grid;
+    place-content: center;
+    width: 15em;
+    padding: 2em;
+    background-color: rgb(76, 199, 180);
+    color: white;
+    font-size: 1.5rem;
+}
+h1{
+    color: chocolate;
+}
+h2{
+    color: burlywood;
+}
+p{
+    background-color: #4d3838;
+    display: inline-block;
+}
+#submit{
+    font-family: 'Rubik Doodle Shadow';
+
+}
