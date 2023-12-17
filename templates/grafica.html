@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{%block head%}
+    <title>Grafica desde {{incio}} hasta {{fin}}</title>
+{%endblock%}
+
+{%block body%}
+    <img src={{url_for(dolar.png)}} alt="Grafica Precio dolar">
+    <a href={{url_for(dolar.png)}}>Descargar</a>
+{%endblock%}

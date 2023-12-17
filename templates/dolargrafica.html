@@ -9,11 +9,15 @@
     <h1>Bienvenido <br> 
         Esta es una forma auxiliar para la API del valor del dolar.</h1>
     <p>Instrucciones:
-        ingresar el año que queremos en la casilla de abajo, por defecto devuelve el año actual
+        ingresar la fecha desde la que empezar el grafico en la casilla inicio, y la fecha de fin en la casilla Fin, 
+        por defecto devuelve el ultimo mes. <br>
+        formato esperado dd-mm-aaaa
     </p>
     <form action="/grafica" method="POST">
-        <label for="fecha">Año</label>
-        <input type="datetime" name="year" id="year">
+        <label for="Inicio">Inicio</label>
+        <input type="datetime" name="Inicio" id="Inicio">
+        <label for="fecha">Fin</label>
+        <input type="datetime" name="Fin" id="Fin">
         <input type="submit" value="Aceptar">
     </form>
 </div>

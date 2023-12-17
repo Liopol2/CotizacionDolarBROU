@@ -2,10 +2,11 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+import pandas as pd
 import time,calendar
 from datetime import datetime
-from icecream import ic
-#import pandas as pd
+#from icecream import ic
+
 #webdriver
 driver_path= "C:\\Users\\leong\\Downloads\\chromedriver.exe"
 options = webdriver.ChromeOptions()
@@ -24,7 +25,7 @@ valores={
 }
 valorexistente=False
 compraXpath='/html/body/div[2]/div[5]/div/div/div/div/div[1]/div/div/div/table/tbody/tr[1]/td[3]/div/p'
-ventaXpath='/html/body/div[2]/div[5]/div/div/div/div/div[1]/div/div/div/table/tbody/tr[2]/td[3]/div/p' 
+ventaXpath='/html/body/div[2]/div[5]/div/div/div/div/div[1]/div/div/div/table/tbody/tr[1]/td[5]/div/p' 
 
 #Refresca los valores desde las paginas y los escribe en valores
 def cargarpagina(driver):
@@ -40,48 +41,45 @@ def fetchValor(driver,xpath):
     valstr=valstr.replace(',','.')
     return valstr
 
-def ultimalinea(nombrecsv): 
-    count=0    
-    with open(nombrecsv) as f:
-        for line in f:
-            count += 1
-        lastline = line
-        return lastline,count
-
-
-def agregarATabla(compra,venta,dia,mes):  
-    lineas=0 
+def agregarATabla(compra,venta):  
     #Esta es una cantidad desagradable de variables pero por el momento son necesarias
     fecha=datetime.today().strftime('%d-%m-%Y')
-    año = datetime.now().year
-    nombrecsv='dolar'+str(año)+'.csv' 
+    año = str(datetime.now().year)
+    try:
+        df = pd.read_excel('dolar.xlsx')   
+    except(FileNotFoundError):
+        #Escribir Header y datos si no existe
+        new_data = pd.DataFrame({
+        'Fecha': [fecha],
+        'Dolar Compra': [compra],
+        'Dolar Venta': [venta]
+        })
+        #ic("escribiendo en xlsx vacio",new_data)
+        with pd.ExcelWriter('dolar.xlsx') as writer:
+            new_data.to_excel(writer,index=False,sheet_name=año)
+        return False       
+    #primerafila=df.iloc[[0]].values[0].tolist()
+    ultimafila = df.iloc[[-1]].values[0].tolist()
+    nuevafila=[fecha,float(compra),float(venta)]
 
-    with open(nombrecsv,'a+') as tabla: 
-            if tabla.tell() == 0:
-                tabla.write('Fecha,Dolar Compra,Dolar Venta\n')
-            if dia == 1:
-                tabla.write('\n'+str(mes))
-            last_line,lineas = ultimalinea(nombrecsv)
-            if lineas > 1:
-                ucompra = str(last_line[11:16])
-                uventa = str(last_line[17:23])  
-                ic(nombrecsv,lineas,last_line,ucompra,compra,uventa,venta)
-                if ucompra == compra and uventa == venta:           
-                    print('este valor ya existe')
-                    return True                        
-                row=str('\n'+ fecha + "," + str(compra) + ","+ str(venta))
-                ic(row)
-                tabla.write(row)
-                tabla.close()     
-                return False
-    #repetir cada dia
+    #ic(primerafila,ultimafila,nuevafila)
+
+    if ultimafila==nuevafila:
+        #ic("El valor obtenido es el ultimo valor de la tabla")
+        return True
+    else:
+        df.loc[len(df.index)] = [fecha,compra,venta]   
+        return False
+
+
+#repetir cada dia
 while True:
     cargarpagina(driver)
-    valorexistente=agregarATabla(valores['compra'],valores['venta'],dia,mes)
+    valorexistente=agregarATabla(valores['compra'],valores['venta'])
     while valorexistente==True:
         print("valor existe esperando 5 min")
         time.sleep(300)
-        valorexistente=agregarATabla(valores['compra'],valores['venta'],dia,mes)
+        valorexistente=agregarATabla(valores['compra'],valores['venta'])
     if valorexistente == False:
         print("Valor de hoy actualizado esperando a mañana")
         time.sleep(86400) 
